@@ -1,39 +1,63 @@
 import { Resolver, Query, Args, Mutation } from "@nestjs/graphql";
-import { GetUserArgs } from "../dto/args/getUser.Args";
-import { CreateUserInput } from "../dto/input/create-user.Input";
-import { User } from "../models/user";
+import { GetUserArgs } from "./dto/args/getUser.Args";
+import { User } from "../Models/user";
 import { UsersServices } from "./users.services";
-import {DeleteUserInput} from "../dto/input/delete-user.input";
-import {UpdateUserInput} from "../dto/input/update-user.input";
+import { DeleteUserInput } from "./dto/input/delete-user.input";
+import { UpdateUserInput } from "./dto/input/update-user.input";
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/custom-decorators/current-user.decorator';
 
 @Resolver( () => User)
 export class UsersResolvers {
 
     constructor( private readonly userServices : UsersServices) {}
 
-    @Query( () => User)
-    getUser(@Args() getUserArgs : GetUserArgs) : Promise<User> {
-        return this.userServices.getUser(getUserArgs)
-    }
-
     @Query( () => [User])
-    getUsers() {
-        return this.userServices.getUsers()
+    @UseGuards(JwtAuthGuard)
+    getUsers(@CurrentUser() user : User) : Promise<User[]> {
+        if(user && user.role === 'admin'){
+            return this.userServices.getUsers()
+        }
+        else {
+
+            throw new Error('Get Users - Access Denied')
+        }
+    }
+
+    @Query( () => User)
+    @UseGuards(JwtAuthGuard)
+    getUser(@CurrentUser() user : User, @Args() getUserArgs : GetUserArgs) : Promise<User> {
+        if(user && user.role === 'admin'){
+            return this.userServices.getUser(getUserArgs)
+        }
+        else {
+
+            throw new Error('Get Users - Access Denied')
+        }
     }
 
     @Mutation(() => User)
-    createUser(@Args('createUserData')  createUserData : CreateUserInput ) : Promise<User> {
-        return this.userServices.createUser(createUserData)
+    @UseGuards(JwtAuthGuard)
+    updateUser(@CurrentUser() user : User, @Args('updateUserData') updateUserData : UpdateUserInput) : Promise<User> {
+        if(user && user.role === 'admin'){
+            return this.userServices.updateUser(updateUserData)
+        }
+        else {
+
+            throw new Error('Update - Access Denied')
+        }
     }
 
     @Mutation(() => User)
-    updateUser(@Args('updateUserData') updateUserData : UpdateUserInput) : Promise<User> {
-        return this.userServices.updateUser(updateUserData)
-    }
-
-    @Mutation(() => User)
-    deleteUser(@Args('deleteUserData') deleteUserData : DeleteUserInput) : Promise<User> {
-        return this.userServices.deleteUser(deleteUserData)
+    @UseGuards(JwtAuthGuard)
+    deleteUser(@CurrentUser() user : User, @Args('deleteUserData') deleteUserData : DeleteUserInput) : Promise<User> {
+        if(user && user.role === 'admin') {
+            return this.userServices.deleteUser(deleteUserData)
+        }
+        else {
+            throw new Error('Delete - Access Denied')
+        }
     }
 
 }

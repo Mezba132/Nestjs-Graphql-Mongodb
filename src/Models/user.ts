@@ -7,7 +7,7 @@ import {ObjectType, Field, Int} from '@nestjs/graphql';
 export class User extends Document {
 
     @Prop()
-    @Field({ nullable: true })
+    @Field()
     name: string;
 
     @Prop()
@@ -15,12 +15,16 @@ export class User extends Document {
     email: string;
 
     @Prop()
-    @Field(() => Int)
-    age: number;
+    @Field()
+    mobile : string;
 
     @Prop()
-    @Field({ nullable: true })
-    isSubscribed?: boolean;
+    @Field()
+    hashPassword : string
+
+    @Prop()
+    @Field()
+    role : string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

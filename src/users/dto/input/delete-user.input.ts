@@ -5,5 +5,5 @@ import { IsNotEmpty } from "class-validator";
 export class DeleteUserInput {
     @Field()
     @IsNotEmpty()
-    email : string
+    readonly email : string
 }

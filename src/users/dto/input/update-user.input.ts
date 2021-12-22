@@ -1,5 +1,4 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { IsNotEmpty, IsOptional } from "class-validator";
 
 @InputType()
 export class UpdateUserInput {
@@ -8,12 +7,9 @@ export class UpdateUserInput {
     readonly email : string
 
     @Field()
-    readonly name : string
+    name : string
 
     @Field()
-    readonly age : number
-
-    @Field()
-    readonly isSubscribed : boolean
+    mobile : string
 
 }
