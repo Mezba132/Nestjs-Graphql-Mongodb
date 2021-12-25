@@ -9,7 +9,6 @@ export class GqlAuthGuard extends AuthGuard('local'){
     super();
   }
 
-
   getRequest(context : ExecutionContext) : Promise<any> {
     const ctx = GqlExecutionContext.create(context)
     const request = ctx.getContext()
