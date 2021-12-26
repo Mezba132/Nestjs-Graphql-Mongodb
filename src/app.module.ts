@@ -5,12 +5,14 @@ import {MongooseModule} from "@nestjs/mongoose";
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { ConfigModule } from '@nestjs/config';
+import { SubCategoryModule } from './sub-category/sub-category.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     CategoryModule,
+    SubCategoryModule,
     ConfigModule.forRoot({
       isGlobal : true
     }),

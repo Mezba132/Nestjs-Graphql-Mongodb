@@ -23,7 +23,7 @@ export class CategoryResolver {
   @Query( () => [Category] )
   @hasRoles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getCategories() : Promise<Category[]> {
+  findCategories() : Promise<Category[]> {
     return this.categoryService.getCategories()
   }
 
@@ -47,7 +47,6 @@ export class CategoryResolver {
   deleteCategory(@Args() getCategory : getCategoryArg) : Promise<Category> {
     return this.categoryService.deleteCategory(getCategory)
   }
-
 
 }
 
